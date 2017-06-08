@@ -1,0 +1,19 @@
+---
+
+- name: Download registry key for microsoft
+  get_url: 
+    url: https://packages.microsoft.com/keys/microsoft.asc
+    dest: /var/tmp/microsoft.asc
+
+- name: Convert to gpg extension
+  shell: cat /var/tmp/microsoft.asc | gpg --dearmor > microsoft.gpg
+
+- name: Add microsoft to gpg registry
+  shell: mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
+
+- name: Add registry for vscode to apt-get
+  shell: sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
+
+- name: Install vscode
+  apt:
+    name: code

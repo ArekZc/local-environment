@@ -1,0 +1,9 @@
+---
+
+- name: Add the official N1 repo
+  get_url: 
+    url: https://edgehill.s3-us-west-2.amazonaws.com/2.0.15-c770c80/linux-deb/x64/NylasMail.deb
+    dest: /var/tmp/NylasMail.deb
+
+- name: Install Nylas mailer
+  shell: dpkg -i /var/tmp/NylasMail.deb

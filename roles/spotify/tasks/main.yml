@@ -1,0 +1,16 @@
+---
+
+- name: Add the spotify apt signing key
+  apt_key:
+    keyserver: hkp://keyserver.ubuntu.com:80
+    id: BBEBDCB318AD50EC6865090613B00F1FD2C19886
+
+- name: Add the official spotify repo
+  apt_repository: 
+    repo: deb http://repository.spotify.com stable non-free
+
+- name: Install spotify
+  apt: 
+    name: spotify-client
+    update_cache: yes 
+    state: latest

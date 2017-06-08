@@ -1,0 +1,16 @@
+---
+- hosts: all
+  become: yes
+
+  vars:
+    apt_packages:
+      - curl
+      - vim
+      - git
+  roles:
+    - common
+    - docker
+    - vscode
+    - spotify
+    - chrome
+    - nylas

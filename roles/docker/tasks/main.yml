@@ -1,0 +1,58 @@
+---
+
+- name: Install apt-transport-https
+  apt:
+    name: apt-transport-https
+
+- name: Add the docker apt signing key
+  apt_key:
+    keyserver: pool.sks-keyservers.net
+    id: 58118E89F3A912897C070ADBF76221572C52609D
+  notify: apt-get-update
+
+- name: Add the official docker repo
+  apt_repository:
+    repo: deb https://apt.dockerproject.org/repo {{ansible_distribution|lower}}-{{ ansible_distribution_release }} main
+    state: present
+  notify: apt-get-update
+
+- name: Install docker
+  apt:
+    name: docker-engine
+    state: latest
+
+- name: Add any additional service startup options to the DOCKER_OPTS config variable
+  lineinfile:
+    dest: /etc/default/docker
+    state: present
+    line: DOCKER_OPTS="{{ docker_additional_service_opts }}"
+    regexp: ^DOCKER_OPTS=
+    owner: root
+    group: root
+    mode: 0644
+  notify: docker-restart-service
+
+- name: Add current user to docker group
+  shell: usermod -a -G docker ${USER}
+  notify: docker-restart-service
+
+- name: Start the docker service
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Installing packages
+  action: "{{ ansible_pkg_mgr }} pkg={{ item }} state=present"
+  with_items:
+    - python-setuptools
+
+- name: Installing dependencies
+  easy_install:
+    name: pip
+
+- name: Installing docker compose
+  pip:
+    name: docker-compose
+    version: "{{ docker_compose_version if docker_compose_version else omit }}"
+    state: present

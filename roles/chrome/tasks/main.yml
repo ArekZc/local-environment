@@ -1,0 +1,12 @@
+---
+
+- name: Download latest stable chrome debian package
+  shell: wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - 
+
+- name: Add chrome repo
+  shell: echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list
+
+- name: Install chrome
+  apt:
+    name: google-chrome-stable
+    update_cache: true
